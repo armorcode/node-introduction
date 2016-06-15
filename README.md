@@ -1,5 +1,4 @@
 # ![node.js](./img/nodejs.svg)
-___
 
 Pourquoi __Node.js__ semble-t-il aussi apprécié des développeurs web ?
 + Pourquoi avoir utilisé un langage comme *JavaScript* ? Je croyais que c’était juste pour faire des effets dans sa page web ?
@@ -185,25 +184,29 @@ Personnellement, ça m'a pris un peu de temps à vraiment comprendre ce concept,
 
 Amusons-nous un peu avec ce nouveau concept. Est-on en mesure de prouver que notre code continue à s'exécuter après avoir créé le serveur même si aucune requête HTTP n'est reçue et donc que la fonction de rappel n'est pas appelée ? Essayons ceci :
 
-	var http = require("http");
+```javascript
+var http = require("http");
 
-	function onRequest(request, response) {
-  	console.log("Requête reçue.");
-  	response.writeHead(200, {"Content-Type": "text/plain"});
-  	response.write("Hello World");
-  	response.end();
-	}
+function onRequest(request, response) {
+	console.log("Requête reçue.");
+	response.writeHead(200, {"Content-Type": "text/plain"});
+	response.write("Hello World");
+	response.end();
+}
 
-	http.createServer(onRequest).listen(8888);
-	console.log("Démarrage du serveur.");
+http.createServer(onRequest).listen(8888);
+console.log("Démarrage du serveur.");
+```
 
 Notez l'utilisation de `console.log() pour afficher un message dès que `onRequest` (notre fonction de rappel) est appelée et un autre juste après avoir démarré le serveur.
 
 Quand nous lançons ce code (`node server.js`, comme d'habitude), il va aussitôt afficher « Démarrage du serveur. » dans la console. Dès que nous appelons notre serveur (en ouvrant une page à l'adresse `http://localhost:8888`), le message « Requête reçue. » s'affiche à son tour.
 
 Voilà notre JavaScript événementiel asynchrone et ses fonctions de rappel en action !
+
 ___
-####Comment le serveur gère les requêtes :
+
+#### Comment le serveur gère les requêtes :
 
 Regardons rapidement le reste du code de notre serveur, à savoir le contenu de la fonction de rappel `onRequest()`.
 
@@ -224,22 +227,25 @@ Je vous avais promis de revenir sur la façon d'organiser notre application. Nou
 Voyons comment transformer server.js en véritable module Node.js que l'on pourra utiliser dans notre futur fichier `index.js`.
 
 Vous l'avez probablement déjà remarqué, nous avons déjà utilisé des modules dans notre code :
-	
-	var http = require(""http");
-	...
-	http.createServer(...);
-	
+
+```javascript
+var http = require("http");
+...
+http.createServer(...);
+```
+
 Quelque part dans Node.js, il existe un module appelé `http`. Nous pouvons l'utiliser dans notre propre code en l'important et en affectant le résultat de l'importation à une variable locale.
 
 Cela fait de cette variable locale un objet possédant toutes les méthodes publiques mises à disposition par le module `http`.
 
 Il est courant de prendre le nom du module comme nom de la variable locale, mais vous êtes libre de choisir le nom qu'il vous plaît :
 
+```javascript
+var foo = require("http");
+...
+foo.createServer(...);
+```
 
-	var foo = require("http");
-	...
-	foo.createServer(...);
-	
 Bien, nous savons maintenant comment utiliser un module Node.js dans notre code. Mais comment créer notre propre module et comment l'utiliser ?
 
 Pour cela, transformons notre script `server.js` en véritable module.
@@ -250,39 +256,44 @@ Pour l'instant, la fonctionnalité que notre serveur HTTP a besoin d'exporter es
 
 Pour rendre cela possible, nous allons mettre le code du serveur dans une fonction appelée `start` et nous allons exporter cette fonction :
 
-	var http = require("http");
+```javascript
+var http = require("http");
 
-	function start() {
-  		function onRequest(request, response) {
-    	console.log("Request received.");
-    	response.writeHead(200, {"Content-Type": "text/plain"});
-    	response.write("Hello World");
-    	response.end();
-  	   }
-  		http.createServer(onRequest).listen(8888);
-  		console.log("Démarrage du serveur.");
+function start() {
+	function onRequest(request, response) {
+		console.log("Request received.");
+		response.writeHead(200, {"Content-Type": "text/plain"});
+		response.write("Hello World");
+		response.end();
 	}
+	http.createServer(onRequest).listen(8888);
+	console.log("Démarrage du serveur.");
+}
 
-	exports.start = start;
+exports.start = start;
+```
 
 De cette façon, nous allons pouvoir créer notre fichier principal index.js et y démarrer notre serveur HTTP, bien que le code du serveur soit toujours dans le fichier server.js.
 
 Créez un fichier `index.js` contenant le code suivant :
 
-	var server = require("./server");
-	server.start();
-	
+```javascript
+var server = require("./server");
+server.start();
+```
+
 Comme vous pouvez le voir, nous pouvons utiliser notre module serveur comme n'importe quel module interne, en important le fichier correspondant et en l'assignant à une variable. Les fonctions exportées par le module sont désormais accessibles dans le code.
 
 Et voilà, nous pouvons maintenant lancer notre application avec le script principal et le fonctionnement est exactement le même :
 
-	node index.js
-	
+```shell
+node index.js
+```
+
 Parfait, nous pouvons maintenant mettre les différentes parties de notre application dans des fichiers distincts et les relier entre eux en les transformant en modules.
 
 Cependant, nous n'avons pour le moment que le tout début de notre application en place : recevoir des requêtes HTTP. Nous avons besoin d'en faire quelque chose et de renvoyer des résultats différents en fonction de l'URL demandée par le navigateur à notre serveur.
 
 Pour une application basique, nous pourrions faire cela directement dans la fonction de rappel `onRequest()`. Mais comme je l'ai déjà dit, autant apporter un peu plus de complexité afin de rendre notre exemple plus intéressant et complet.
 
-Faire que des requêtes HTTP différentes impliquent des parties différentes du code s'appelle les router ; eh bien allons-y, créons un module `router.
-
+Faire que des requêtes HTTP différentes impliquent des parties différentes du code s'appelle les router ; eh bien allons-y, créons un module `router`.
