@@ -1,6 +1,4 @@
-
-![node.js](./img/nodejs.svg)
-
+# ![node.js](./img/nodejs.svg)
 ___
 
 Pourquoi __Node.js__ semble-t-il aussi apprécié des développeurs web ?
@@ -8,7 +6,9 @@ Pourquoi __Node.js__ semble-t-il aussi apprécié des développeurs web ?
 + D’où vient cette rapidité supposée de Node.js ? À quoi ça peut me servir ?
 + Est-ce que ce truc est mature ? Qui l’utilise (à part des geeks barbus !) ? Devrais-je
 l’utiliser moi aussi ?
+
 ===
+
 # Installation :
 1. Un peu d'histoire :
 	+ je vous recommande de regarder sur [OpenClassRooms](https://openclassrooms.com/courses/des-applications-ultra-rapides-avec-node-js/node-js-mais-a-quoi-ca-sert)
@@ -18,20 +18,21 @@ l’utiliser moi aussi ?
  
 2. les commandes :
 
+```shell
+sudo apt-get install python-software-properties python g++ make sudo add-apt-	repository ppa:chris-lea/node.js
+sudo apt-get update
+sudo apt-get install nodejs
 ```
-	sudo apt-get install python-software-properties python g++ make sudo add-apt-	repository ppa:chris-lea/node.js
- 	sudo apt-get update
- 	sudo apt-get install nodejs
- ```
  + Vérifier la version de node :
  `node -v`
  + Tester __Node.js__ :
  
 A mettre dans un fichier `monfichier.js`:
- `console.log('Recoucou dans Node.js !');`
- Maintenant on lance `node monfichier.js` .
- 
+`console.log('Recoucou dans Node.js !');`
+Maintenant on lance `node monfichier.js`.
+
 ___
+
 ## Un serveur HTTP basique:
 
 Point de départ de ma première application « réelle » avec Node.js, je me suis bien sûr demandé comment je devais la coder, mais aussi comment organiser mon code.
@@ -47,23 +48,27 @@ Selon moi, le standard est d'appeler le fichier principal `index.js`. Il est aus
 
 Commençons par le module serveur. Créez un fichier `server.js` à la racine du répertoire de votre projet, contenant le code suivant :
 
-	var http = require("http");
+```javascript
+var http = require("http");
 
-	http.createServer(function(request, response) {
-  	response.writeHead(200, {"Content-Type": "text/plain"});
-  	response.write("Hello World");
-  	response.end();
-	}).listen(8888);
+http.createServer(function(request, response) {
+	response.writeHead(200, {"Content-Type": "text/plain"});
+	response.write("Hello World");
+	response.end();
+}).listen(8888);
+```
 
 C'est tout ! Vous venez juste d'écrire un serveur HTTP fonctionnel. Pour le vérifier, nous allons le lancer et le tester. D'abord, exécutez votre script avec Node.js :
 
-	node server.js
+```shell
+node server.js
+```
 
 Maintenant, ouvrez votre navigateur à l'adresse http://localhost:8888/. Ce qui devrait afficher une page avec le message « Hello World ».
 
 Plutôt intéressant n'est-ce pas ? Nous allons nous attarder un peu sur ce que nous venons de réaliser et reprendrons plus tard la question de l'organisation du code.
 
-##Analyse du code:
+## Analyse du code:
 
 Détaillons donc un peu notre code.
 
@@ -75,11 +80,14 @@ Dans un premier temps, nous allons oublier la définition de fonction passée en
 
 Nous aurions pu écrire le code démarrant le serveur et le faisant écouter le port 8888 comme suit :
 
-	var http = require("http");
-	var server = http.createServer();
+```javascript
+var http = require("http");
+var server = http.createServer();
 
-	server.listen(8888);
- Ce code ne fait rien d'autre que de démarrer un serveur HTTP écoutant le port 8888 (il ne renvoie aucun résultat aux requêtes reçues).
+server.listen(8888);
+```
+
+Ce code ne fait rien d'autre que de démarrer un serveur HTTP écoutant le port 8888 (il ne renvoie aucun résultat aux requêtes reçues).
 
 La partie vraiment intéressante (et qui pourra sembler bizarre à ceux habitués à des langages plus conventionnels comme PHP) est la présence d'une définition de fonction comme paramètre de la fonction `createServer()`.
 
@@ -89,15 +97,18 @@ D'ailleurs, la définition de fonction est bien le seul paramètre passé lors d
 
 Vous pouvez par exemple faire quelque chose comme ça :
 
-	function say(word) {
-  	console.log(word);
-	}
+```javascript
+function say(word) {
+	console.log(word);
+}
 
-	function execute(someFunction, value) {
-  	someFunction(value);
-	}
+function execute(someFunction, value) {
+	someFunction(value);
+}
 
-	execute(say, "Hello");
+execute(say, "Hello");
+```
+
 Lisez le code bien attentivement ! Ce que nous faisons ici est de passer la fonction `say` comme premier paramètre à la fonction `execute`. Pas la valeur retournée par `say` mais bien `say` elle-même !
 
 De la sorte, say est affectée à la variable locale `someFunction` dans `execute` et `execute` peut appeler cette fonction avec la syntaxe `someFunction()` (avec les parenthèses).
@@ -106,33 +117,42 @@ Bien entendu, comme `say` attend un paramètre, `execute` peut passer ce paramè
 
 Il est possible, comme nous venons de le faire, de passer une fonction en paramètre en utilisant son nom. Ceci dit, il n'est pas nécessaire d'utiliser cette indirection (d'abord définir la fonction puis passer son nom), nous pouvons simplement passer comme paramètre la définition de la fonction elle-même :
 
-	function execute(someFunction, value) {
-  	someFunction(value);
-	}
+```javascript
+function execute(someFunction, value) {
+	someFunction(value);
+}
 
-	execute(function(word){ console.log(word) }, "Hello");
-* ##Passer une fonction à la création du serveur HTTP:
+execute(function(word){ console.log(word) }, "Hello");
+```
+
+* ## Passer une fonction à la création du serveur HTTP:
 
 Nous pouvons désormais revenir à notre serveur rudimentaire :
 
-	var http = require("http");
+```javascript
+var http = require("http");
 
-	http.createServer(function(request, response) {
-  	response.writeHead(200, {"Content-Type": "text/plain"});
-  	response.write("Hello World");
-  	response.end();
-	}).listen(8888);
+http.createServer(function(request, response) {
+	response.writeHead(200, {"Content-Type": "text/plain"});
+	response.write("Hello World");
+	response.end();
+}).listen(8888);
+```
+
 Désormais, ce que nous faisons ici est compréhensible : nous passons à `createServer` une fonction anonyme.
 
 Nous pourrions d'ailleurs arriver au même résultat avec le code suivant :
 
-	var http = require("http");
+```javascript
+var http = require("http");
 
-	function onRequest(request, response) {
-  	response.writeHead(200, {"Content-Type": "text/plain"});
-  	response.write("Hello World");
-  	response.end();
-	}
+function onRequest(request, response) {
+	response.writeHead(200, {"Content-Type": "text/plain"});
+	response.write("Hello World");
+	response.end();
+}
+```
+
 C'est peut-être le bon moment de se demander : pourquoi procédons-nous de cette façon ?
 
 * ## Fonctions de rappel liées aux événements:
@@ -149,7 +169,7 @@ Lorsque nous appelons la méthode `http.createServer()`, notre but n'est bien s�
 
 Le problème est que cela arrive de façon asynchrone : une requête peut arriver n'importe quand et notre serveur utilise un processus unique.
 
-(pour PHP)Lorsqu'une requête HTTP arrive, le serveur Web (habituellement Apache) crée un nouveau processus et le script PHP associé est exécuté de façon séquentielle, c'est-à-dire en interprétant le code dans l'ordre dans lequel il est écrit.
+_(pour PHP)_ Lorsqu'une requête HTTP arrive, le serveur Web (habituellement Apache) crée un nouveau processus et le script PHP associé est exécuté de façon séquentielle, c'est-à-dire en interprétant le code dans l'ordre dans lequel il est écrit.
 
 Si l'on se place au niveau du contrôle du flux, nous sommes au beau milieu de notre application Node.js lorsqu'une requête arrive sur le port 8888 et que nous devons la traiter. Comment gérer cela sans perdre la raison ?
 
