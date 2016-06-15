@@ -92,7 +92,7 @@ La partie vraiment intéressante (et qui pourra sembler bizarre à ceux habitué
 
 D'ailleurs, la définition de fonction est bien le seul paramètre passé lors de l'appel à `createServer()`. En effet, en JavaScript, les fonctions peuvent être passées en paramètre comme n'importe quelle autre valeur.
 
-* ##Les fonctions paramètres:
+## Les fonctions paramètres:
 
 Vous pouvez par exemple faire quelque chose comme ça :
 
@@ -124,7 +124,7 @@ function execute(someFunction, value) {
 execute(function(word){ console.log(word) }, "Hello");
 ```
 
-* ## Passer une fonction à la création du serveur HTTP:
+## Passer une fonction à la création du serveur HTTP:
 
 Nous pouvons désormais revenir à notre serveur rudimentaire :
 
@@ -154,7 +154,7 @@ function onRequest(request, response) {
 
 C'est peut-être le bon moment de se demander : pourquoi procédons-nous de cette façon ?
 
-* ## Fonctions de rappel liées aux événements:
+## Fonctions de rappel liées aux événements:
 
 La réponse tient en deux points :
 
