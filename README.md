@@ -1,7 +1,8 @@
 # ![node.js](./img/nodejs.svg)
 
 Pourquoi __Node.js__ semble-t-il aussi apprécié des développeurs web ?
-+ Pourquoi avoir utilisé un langage comme *JavaScript* ? Je croyais que c’était juste pour faire des effets dans sa page web ?
++ Pourquoi avoir utilisé un langage comme *JavaScript* 
++ Je croyais que c’était juste pour faire des effets dans sa page web ?
 + D’où vient cette rapidité supposée de Node.js ? À quoi ça peut me servir ?
 + Est-ce que ce truc est mature ? Qui l’utilise (à part des geeks barbus !) ? Devrais-je
 l’utiliser moi aussi ?
