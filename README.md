@@ -2,7 +2,6 @@
 
 ![node.js](./img/nodejs.png)
 
-FOO
 Pourquoi __Node.js__ semble-t-il aussi apprécié des développeurs web ?
 
 + Pourquoi avoir utilisé un langage comme *JavaScript*
